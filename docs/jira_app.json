@@ -1,0 +1,75 @@
+{
+  "programa": "Jira.app",
+  "subtitulo": "Consulta de horas trabalhadas por pessoa no Jira Cloud (ismartblue.atlassian.net)",
+  "autor": "Marcello Mattar",
+  "itens": [
+    {
+      "nome": "Conexão com o Jira",
+      "descricao": "Acesso à API REST do Jira Cloud com e-mail e API token.",
+      "filhos": [
+        {
+          "nome": "Cliente da API (jira_client.py)",
+          "descricao": "Classe JiraClient: autenticação básica, tratamento de erros (401, 403, falha de rede) e validação das credenciais via /myself antes de qualquer consulta."
+        },
+        {
+          "nome": "Configuração (config.py)",
+          "descricao": "URL, e-mail e token ficam em ~/Library/Application Support/Jira/config.json com permissão 600, fora do projeto."
+        }
+      ]
+    },
+    {
+      "nome": "Lista de pessoas",
+      "descricao": "Combobox com todas as pessoas ativas com acesso ao Jira.",
+      "filhos": [
+        {
+          "nome": "Busca de usuários",
+          "descricao": "Endpoint /users/search com paginação; filtra apenas contas Atlassian ativas (exclui apps e bots) e ordena por nome."
+        },
+        {
+          "nome": "Combobox pesquisável",
+          "descricao": "É possível digitar para filtrar. Botão Atualizar recarrega a lista."
+        }
+      ]
+    },
+    {
+      "nome": "Horas trabalhadas",
+      "descricao": "Ao selecionar uma pessoa, o app soma os worklogs dela no período escolhido.",
+      "filhos": [
+        {
+          "nome": "Seleção de período",
+          "descricao": "Dia, Semana (segunda a domingo), Mês ou Ano, com data de referência por calendário. O intervalo calculado é exibido na tela."
+        },
+        {
+          "nome": "Cálculo",
+          "descricao": "JQL worklogAuthor + worklogDate localiza as issues; cada worklog é filtrado por autor e data de início.",
+          "bullets": [
+            "Consulta executada em thread separada, sem travar a janela.",
+            "Respostas de seleções antigas são descartadas."
+          ]
+        },
+        {
+          "nome": "Tabela de resultados",
+          "descricao": "Colunas: Issue, Resumo, Datas trabalhadas e Horas, com linha final TOTAL consolidando horas e dias trabalhados."
+        }
+      ]
+    },
+    {
+      "nome": "Aplicativo macOS",
+      "descricao": "Interface em PySide6 (Qt) empacotada como Jira.app.",
+      "filhos": [
+        {
+          "nome": "Interface (main.py)",
+          "descricao": "Janela principal, diálogo de configuração e workers em threads."
+        },
+        {
+          "nome": "Build (build_app.sh)",
+          "descricao": "Gera dist/Jira.app com PyInstaller.",
+          "bullets": [
+            "Na primeira abertura, use botão direito > Abrir (app não assinado)."
+          ]
+        }
+      ]
+    }
+  ],
+  "complemento": "Relatório de Horas"
+}
